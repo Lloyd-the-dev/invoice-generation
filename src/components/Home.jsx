@@ -3,21 +3,63 @@ import { useState } from 'react'
 
 const Home = () => {
     const [items, setItems] = useState([{ itemName: '', itemDescription: '', quantity: 1, price: 1.00 }]);
+    const[subtotal, setSubtotal] = useState(0)
+    const[discountRate, setDiscountRate] = useState(0)
+    const[discount, setDiscount] = useState(0)
+    const[taxRate, setTaxRate] = useState(0)
+    const[tax, setTax] = useState(0)
+    const[total, setTotal] = useState(0)
 
     const handleItemChange = (index, field, value) => {
         const newItems = [...items];
         newItems[index][field] = value;
         setItems(newItems);
+        calculateSubtotal(newItems)
     }
 
     const handleDeleteItem = (index) => {
         const newItems = [...items];
         newItems.splice(index, 1);
         setItems(newItems);
+        calculateSubtotal(newItems)
     }
     const handleAddItem = () => {
         setItems([...items, { itemName: '', itemDescription: '', quantity: 1, price: 1.00 }]);
     }
+    const calculateSubtotal = (items) => {
+        let total = 0;
+        items.forEach(item => {
+            total += item.price * item.quantity
+        })
+        setSubtotal(total)
+        calculateTotal()
+    }
+    const handleDiscountRate = (e) => {
+        const rate = parseFloat(e.target.value)
+        setDiscountRate(rate)
+        calculateDiscount(items,rate)
+    }
+    const calculateDiscount = (items, rate = discountRate) =>{
+        const discountAmount = (rate / 100) * subtotal;
+        setDiscount(discountAmount.toFixed(2))
+        calculateTotal()
+    }
+    const handleTaxRate = (e) => {
+        const rate = parseFloat(e.target.value)
+        setTaxRate(rate)
+        calculateTax(items, rate)
+    }
+    const calculateTax = (items, rate = taxRate) => {
+        const taxAmount = (rate/100) * subtotal
+        setTax(taxAmount.toFixed(2))
+        
+        calculateTotal()
+    }
+    const calculateTotal = () => {
+        const total = (subtotal - discount + tax).toFixed(2)
+        setTotal(total)
+    }
+
 
   return (
     <div className='flex m-16 justify-around items-start'>
@@ -109,11 +151,11 @@ const Home = () => {
                 <hr className='mt-4'/>
                 <button className='rounded-lg bg-darkGray p-3 font-bold text-white mt-4' onClick={handleAddItem}>Add Item</button>
                 <div className='text-right my-8 mx-32 w-4/5'>
-                    <h4 className='font-bold mb-2'>Subtotal: <span className='ml-32 font-normal'></span></h4>
-                    <h4 className='font-bold mb-2'>Discount: <span className='ml-32 font-normal'></span></h4>
-                    <h4 className='font-bold mb-2'>Tax: <span className='ml-32 font-normal'></span></h4>
-                    <hr className='-mr-16 w-1/2'/>
-                    <h4 className='font-bold'>Total: <span className='ml-32 font-normal'></span></h4>
+                    <h4 className='font-bold mb-2'>Subtotal: <span className='ml-32 font-normal'>₦{subtotal}</span></h4>
+                    <h4 className='font-bold mb-2'>Discount: <span className='ml-32 font-normal'>₦{discount}</span></h4>
+                    <h4 className='font-bold mb-2'>Tax: <span className='ml-32 font-normal'>₦{tax}</span></h4>
+                    <hr className='w-1/2 ml-80'/>
+                    <h4 className='font-bold'>Total: <span className='ml-32 font-normal'>{total}</span></h4>
                 </div>
             </div>
         </div>
@@ -122,9 +164,9 @@ const Home = () => {
             <hr className='m-4 w-full -ml-0'/>
             <form>
                 <p>Tax rate(%):</p>
-                <input type="number" className='p-2 rounded-lg w-full my-2'/>
+                <input type="number" className='p-2 rounded-lg w-full my-2' value={taxRate} onChange={handleTaxRate}/>
                 <p>Discount Rate(%):</p>
-                <input type="number" className='p-2 rounded-lg w-full my-2'/>
+                <input type="number" className='p-2 rounded-lg w-full my-2' value={discountRate} onChange={handleDiscountRate}/>
             </form>
         </div>
     </div>
