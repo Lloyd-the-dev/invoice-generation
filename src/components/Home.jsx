@@ -5,16 +5,18 @@ const Home = () => {
     const [items, setItems] = useState([{ itemName: '', itemDescription: '', quantity: 1, price: 1.00 }]);
     const[subtotal, setSubtotal] = useState(0)
     const[discountRate, setDiscountRate] = useState(0)
-    const[discount, setDiscount] = useState(0)
+    const[discount, setDiscount] = useState(null)
     const[taxRate, setTaxRate] = useState(0)
-    const[tax, setTax] = useState(0)
-    const[total, setTotal] = useState(0)
+    const[tax, setTax] = useState(null)
+    const[total, setTotal] = useState(null)
 
     const handleItemChange = (index, field, value) => {
         const newItems = [...items];
         newItems[index][field] = value;
         setItems(newItems);
+        calculateTotal()
         calculateSubtotal(newItems)
+       
     }
 
     const handleDeleteItem = (index) => {
@@ -22,6 +24,7 @@ const Home = () => {
         newItems.splice(index, 1);
         setItems(newItems);
         calculateSubtotal(newItems)
+        calculateTotal()
     }
     const handleAddItem = () => {
         setItems([...items, { itemName: '', itemDescription: '', quantity: 1, price: 1.00 }]);
@@ -40,8 +43,13 @@ const Home = () => {
         calculateDiscount(items,rate)
     }
     const calculateDiscount = (items, rate = discountRate) =>{
+        if(!rate){
+            setDiscount(0)
+            calculateTotal()
+            return
+        }
         const discountAmount = (rate / 100) * subtotal;
-        setDiscount(discountAmount.toFixed(2))
+        setDiscount(discountAmount)
         calculateTotal()
     }
     const handleTaxRate = (e) => {
@@ -50,13 +58,27 @@ const Home = () => {
         calculateTax(items, rate)
     }
     const calculateTax = (items, rate = taxRate) => {
+        if(!rate){
+            setTax(0)
+            calculateTotal()
+            return
+        }
         const taxAmount = (rate/100) * subtotal
-        setTax(taxAmount.toFixed(2))
-        
+        setTax(taxAmount)
         calculateTotal()
     }
     const calculateTotal = () => {
-        const total = (subtotal - discount + tax).toFixed(2)
+        let total = subtotal;
+
+        // Subtract discount if it's applied
+        if (discount) {
+            total -= discount;
+        }
+    
+        // Add tax if it's applied
+        if (tax) {
+            total += tax;
+        }
         setTotal(total)
     }
 
@@ -152,10 +174,10 @@ const Home = () => {
                 <button className='rounded-lg bg-darkGray p-3 font-bold text-white mt-4' onClick={handleAddItem}>Add Item</button>
                 <div className='text-right my-8 mx-32 w-4/5'>
                     <h4 className='font-bold mb-2'>Subtotal: <span className='ml-32 font-normal'>₦{subtotal}</span></h4>
-                    <h4 className='font-bold mb-2'>Discount: <span className='ml-32 font-normal'>₦{discount}</span></h4>
-                    <h4 className='font-bold mb-2'>Tax: <span className='ml-32 font-normal'>₦{tax}</span></h4>
+                    <h4 className='font-bold mb-2'>Discount: <span className='ml-32 font-normal'>₦{discount !== null ? discount : 0}</span></h4>
+                    <h4 className='font-bold mb-2'>Tax: <span className='ml-32 font-normal'>₦{tax !== null ? tax : 0}</span></h4>
                     <hr className='w-1/2 ml-80'/>
-                    <h4 className='font-bold'>Total: <span className='ml-32 font-normal'>{total}</span></h4>
+                    <h4 className='font-bold'>Total: <span className='ml-32 font-normal'>₦{total}</span></h4>
                 </div>
             </div>
         </div>
