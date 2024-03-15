@@ -74,13 +74,13 @@ const Home = () => {
     }
         const handleDownloadPDF = () => {
         const modal = document.getElementById('modal-content');
-        const closeButtonHeight = 40; // Adjust according to the close button's height
-        const downloadButtonHeight = 40; // Adjust according to the download PDF button's height
+        const closeButtonHeight = 40; 
+        const downloadButtonHeight = 40; 
       
         html2canvas(modal).then(canvas => {
           const imgData = canvas.toDataURL('image/png');
           const pdf = new jsPDF();
-          const imgWidth = 210; // A4 paper width in mm
+          const imgWidth = 210; 
           const imgHeight = (canvas.height - closeButtonHeight - downloadButtonHeight) * imgWidth / canvas.width;
           pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
           pdf.save('modal.pdf');
@@ -134,7 +134,12 @@ const Home = () => {
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
+                <div className="flex flex-col items-center font-bold m-8">
+                    <h1 className="text-3xl">INVOICLY</h1>
+                    <p className="text-xl">Generate your invoices with ease and accuracy</p>
+                </div>
                 <div className="flex items-start justify-between m-4 p-5 border-b border-solid border-blueGray-200 rounded-t">
+                    
                   <div className='flex justify-between w-full'>
                     <h1>{billFrom}</h1>
                     <div className='flex flex-col items-center'>
