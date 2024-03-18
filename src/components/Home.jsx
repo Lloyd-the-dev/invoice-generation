@@ -230,7 +230,7 @@ const Home = () => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-        <div className="bg-red-400 rounded-xl sm:w-3/4 w-4/5 m-2 p-1 md:-ml-80">
+        <div className="bg-white rounded-xl sm:w-3/4 w-4/5 m-2 p-1 md:-ml-80">
             {/*Upper part of left hand side form*/}
            
             <div className='m-4'>
@@ -314,7 +314,7 @@ const Home = () => {
                         <input
                             type="text"
                             placeholder='item name'
-                            className=' bg-ashy md:p-2 p-1 sm:rounded-lg rounded-sm mb-2 sm::w-80 w-20'
+                            className=' bg-ashy md:p-2 p-1 sm:rounded-lg rounded-sm mb-2 sm:w-80 w-20'
                             value={item.itemName}
                             onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                         />
