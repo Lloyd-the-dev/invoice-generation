@@ -230,7 +230,7 @@ const Home = () => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-        <div className="bg-white rounded-xl sm:w-3/4 w-4/5 m-2 p-1 md:-ml-80">
+        <div className="bg-white rounded-xl sm:w-3/4 w-4/5 m-2 p-1 sm:p-4 md:-ml-80">
             {/*Upper part of left hand side form*/}
            
             <div className='m-4'>
@@ -299,9 +299,9 @@ const Home = () => {
             <div>
                 <hr className='mb-4 mt-16'/>
                 {/* Item heading */}
-                <div className='flex justify-between text-sm md:text-lg m-2'>
+                <div className='flex justify-between text-sm md:text-lg sm:m-4'>
                     <h1 className='font-bold w-1/3'>ITEM</h1>
-                    <div className='flex justify-between sm:w-1/2 w-3/4'>
+                    <div className='flex justify-between sm:w-2/5 w-3/4'>
                         <h1 className='font-bold'>QTY</h1>
                         <h1 className='font-bold'>PRICE(₦)</h1>
                         <h1 className='font-bold'>ACTION</h1>
@@ -309,8 +309,8 @@ const Home = () => {
                 </div>
                 <hr className='mt-4'/>
                 {items.map((item, index) => (
-                <div key={index} className='flex justify-between items-center'>
-                    <div className='flex flex-col items-start md:mt-2 mt-6'>
+                <div key={index} className='flex justify-between items-center '>
+                    <div className='flex flex-col items-center md:mt-2 mt-6 m-4'>
                         <input
                             type="text"
                             placeholder='item name'
@@ -326,7 +326,7 @@ const Home = () => {
                             onChange={(e) => handleItemChange(index, 'itemDescription', e.target.value)}
                         />
                     </div>
-                    <div className='flex justify-between w-3/5 sm:-mt-8  -mt-10 sm:ml-0 -ml-16'>
+                    <div className='flex justify-between w-3/5 sm:w-2/5 sm:-mt-8  -mt-10 sm:mr-4 -ml-16'>
                         {/* Quantity */}
                         <input
                             type="number"
