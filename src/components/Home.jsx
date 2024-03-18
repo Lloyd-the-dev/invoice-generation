@@ -72,22 +72,32 @@ const Home = () => {
         const taxAmount = (rate/100) * subtotal
         setTax(taxAmount)
     }
-        const handleDownloadPDF = () => {
+    const handleDownloadPDF = () => {
         const modal = document.getElementById('modal-content');
-        const closeButtonHeight = 40; 
-        const downloadButtonHeight = 40; 
-      
-        html2canvas(modal).then(canvas => {
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF();
-          const imgWidth = 210; 
-          const imgHeight = (canvas.height - closeButtonHeight - downloadButtonHeight) * imgWidth / canvas.width;
-          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-          pdf.save('modal.pdf');
+        const modalStyle = window.getComputedStyle(modal);
+        const modalHeight = parseFloat(modalStyle.height);
+        const modalScrollHeight = modal.scrollHeight;
+    
+        // Temporarily adjust the modal height to match its scrollable content
+        modal.style.height = `${modalScrollHeight}px`;
+    
+        html2canvas(modal, { scrollX: 0, scrollY: -window.scrollY }).then(canvas => {
+            // Reset the modal height to its original value
+            modal.style.height = modalStyle.height;
+    
+            const pdf = new jsPDF('p', 'px', 'a4');
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = pdf.internal.pageSize.getWidth();
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save('Invoice.pdf');
+
+            modal.style.height = modalHeight + 'px';
         });
-      };
-      
-      
+    };
+    
+
 
     useEffect(() => {
         const discountAmount = (discountRate / 100) * subtotal;
@@ -123,25 +133,25 @@ const Home = () => {
 
 
   return (
-    <div className='sm:flex m-16 sm:justify-around sm:items-start w-full sm:w-4/5'>
+    <div className='md:flex md:flex-row md:m-16 m-4 w-9/10 md:justify-around md:items-start md:w-4/5 flex flex-col items-center'>
         {showModal ? (
         <>
           <div
             id="modal-content"
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+            className={`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 transition duration-150 ease-in-out z-50 outline-none focus:outline-none`}
           >
-            <div className="relative w-4/5 my-6 mx-auto max-w-3xl p-16">
+            <div className={`relative w-full md:w-4/5 md:my-6 mx-auto max-w-3xl p-16 mt-32 md:mt-48`}>
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex flex-col items-center font-bold m-8">
-                    <h1 className="text-3xl">INVOICLY</h1>
-                    <p className="text-xl">Generate your invoices with ease and accuracy</p>
+                    <h1 className="md:text-3xl text-2xl italic">INVOICLY</h1>
+                    <p className="md:text-xl text-lg">Generate your invoices with ease and accuracy</p>
                 </div>
                 <div className="flex items-start justify-between m-4 p-5 border-b border-solid border-blueGray-200 rounded-t">
                     
                   <div className='flex justify-between w-full'>
-                    <h1>{billFrom}</h1>
+                    <h1 className='font-bold'>{billFrom}</h1>
                     <div className='flex flex-col items-center'>
                         <h1>Amount Due:</h1>
                         <h1>{total}</h1>
@@ -156,9 +166,9 @@ const Home = () => {
                     </span>
                   </button>
                 </div>
-                <div className='flex justify-between w-4/5 m-8 p-4'>
+                <div className='flex justify-between md:w-4/5 md:m-8 w-full p-4'>
                     <div className='flex flex-col items-start'>
-                        <h3 className='font-extrabold'>Billed From:</h3>
+                        <h3 className='font-extrabold '>Billed From:</h3>
                         <p>{billFrom}</p>
                         <p>{billFromEmail}</p>
                         <p>{billFromAddress}</p>
@@ -176,26 +186,27 @@ const Home = () => {
                 </div>
                 {/*body*/}
                 
-                <div className="relative p-6 flex-auto">
-                    
-                  <hr />
-                  <div className='flex justify-between w-4/5 m-8 mb-0'> 
-                    <div className='flex w-3/4 justify-between'>
-                        <h1 className='font-extrabold'>QTY</h1>
-                        <h1 className='w-4/5 font-extrabold'>Description</h1> {/* NB: this should be the item name plus the description*/}
+                <div className='flex flex-col mt-16 items-start p-2 mx-4'>
+                    <hr />
+                    <div className='flex justify-between w-full mb-0'> 
+                        <div className='flex w-2/5 justify-between'>
+                            <h1 className='font-extrabold'>QTY</h1>
+                            <h1 className='font-extrabold'>Description</h1> {/* NB: this should be the item name plus the description*/}
+                        </div>
+                        <h1 className='font-extrabold'>Amount</h1>
                     </div>
-                    <h1 className='font-extrabold'>Amount</h1>
-                  </div>
-                </div>
-                {items.map((item, index) => (
-                    <div key={index} className='flex justify-between w-4/5 mx-16'>
-                        <div className='flex w-3/5 justify-between'>
+             
+                    {items.map((item, index) => (
+                    <div key={index} className='flex justify-between w-full my-2'>
+                        <div className='flex w-3/4 justify-between'>
                             <p>{item.quantity}</p>
-                            <p>{item.itemName} - {item.itemDescription}</p>
+                            <p className='w-3/4'>{item.itemName} - {item.itemDescription}</p>
                         </div>
                         <p className='mr-4'>{item.price * item.quantity}</p>
                     </div>
-                ))}
+                      ))}
+                </div>
+              
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b mt-16">
                   <button
@@ -219,21 +230,21 @@ const Home = () => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-        <div className="bg-white rounded-xl sm:w-3/4  p-4 sm:-ml-80">
+        <div className="bg-white rounded-xl md:w-3/4 w-3/4 p-4 md:-ml-80">
             {/*Upper part of left hand side form*/}
            
-            <div>
+            <div className='m-4'>
                 <h3>Current Date: <span className='ml-4'>{new Date().getDate()}/{new Date().getMonth() + 1}/{new Date().getFullYear()}</span></h3>
                 <div className='flex items-center justify-between w-64 mt-2'>
                     <h3>Due Date: </h3>
                     <input type='date' className='bg-ashy p-2 rounded-md' value={dueDate} onChange={handleDueDateChange} required></input>
                 </div>
-                <hr className='mt-16'/>
+                <hr className='md:mt-16 mt-4'/>
             </div>
             {/* Middle Side*/}
-            <div className='m-8 flex justify-between'>
+            <div className='m-8 md:flex md:flex-row md:justify-between flex flex-col'>
                 {/* Bill Sender */}
-                <form className='flex flex-col w-2/5'>
+                <form className='flex flex-col md:w-2/5'>
                     <h2 className='font-bold mb-2'>Bill from:</h2>
                     <input 
                         required 
@@ -258,7 +269,7 @@ const Home = () => {
                     />
                 </form>
                 {/* Bill Recepient */}
-                <form className='flex flex-col w-2/5'>
+                <form className='flex flex-col md:w-2/5 mt-4 md:mt-0'>
                     <h2 className='font-bold mb-2'>Bill to:</h2>
                     <input 
                         required 
@@ -288,7 +299,7 @@ const Home = () => {
             <div>
                 <hr className='mb-4 mt-16'/>
                 {/* Item heading */}
-                <div className='flex justify-between'>
+                <div className='flex justify-between text-sm md:text-lg'>
                     <h1 className='font-bold'>ITEM</h1>
                     <div className='flex justify-between w-1/2'>
                         <h1 className='font-bold'>QTY</h1>
@@ -299,28 +310,28 @@ const Home = () => {
                 <hr className='mt-4'/>
                 {items.map((item, index) => (
                 <div key={index} className='flex justify-between items-center'>
-                    <div className='flex flex-col items-center mt-2'>
+                    <div className='flex flex-col items-start md:mt-2 mt-6'>
                         <input
                             type="text"
                             placeholder='item name'
-                            className=' bg-ashy p-2 rounded-lg mb-2 w-80'
+                            className=' bg-ashy md:p-2 p-1 rounded-lg mb-2 md:w-80 w-32'
                             value={item.itemName}
                             onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                         />
                         <input
                             type="text"
                             placeholder='item description'
-                            className='bg-ashy p-2 rounded-lg mb-2 w-80'
+                            className='bg-ashy md:p-2 p-1 rounded-lg mb-2 md:w-80 w-80'
                             value={item.itemDescription}
                             onChange={(e) => handleItemChange(index, 'itemDescription', e.target.value)}
                         />
                     </div>
-                    <div className='flex justify-between w-1/2 -mt-8'>
+                    <div className='flex justify-between w-1/2 -mt-8 md:ml-0 -ml-32'>
                         {/* Quantity */}
                         <input
                             type="number"
                             placeholder='1'
-                            className='w-16 p-2 rounded-sm bg-ashy'
+                            className='md:w-16 w-8 md:p-2 p-1 rounded-sm bg-ashy'
                             value={item.quantity}
                             onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value))}
                         />
@@ -328,31 +339,39 @@ const Home = () => {
                         <input
                             type="number"
                             placeholder="1.00"
-                            className='w-32 p-2 rounded-sm bg-ashy'
+                            className='md:w-32 w-24 md:p-2 p-1 rounded-sm bg-ashy'
                             value={item.price}
                             onChange={(e) => handleItemChange(index, 'price', parseFloat(e.target.value))}
                         />
                         {/* Delete Icon */}
                         <i
-                            className='bx bx-trash text-white bg-red-600 p-4 cursor-pointer rounded-lg'
+                            className='bx bx-trash text-white bg-red-600 md:p-4 p-2 cursor-pointer rounded-lg'
                             onClick={() => handleDeleteItem(index)}
                         ></i>
                     </div>
                 </div>
             ))}
                 <hr className='mt-4'/>
-                <button className='rounded-lg bg-darkGray p-3 font-bold text-white mt-4' onClick={handleAddItem}>Add Item</button>
-                <div className='text-right my-8 mx-32 w-4/5'>
-                    <h4 className='font-bold mb-2'>Subtotal: <span className='ml-32 font-normal'>₦{subtotal}</span></h4>
-                    <h4 className='font-bold mb-2'>Discount: <span className='ml-32 font-normal'>₦{discount !== null ? discount : 0}</span></h4>
-                    <h4 className='font-bold mb-2'>Tax: <span className='ml-32 font-normal'>₦{tax !== null ? tax : 0}</span></h4>
-                    <hr className='w-1/2 ml-80'/>
-                    <h4 className='font-bold'>Total: <span className='ml-32 font-normal'>₦{total !== null ? total : 0}</span></h4>
-                </div>
+                <button className='rounded-lg bg-darkGray md:p-3 p-2 font-bold text-white mt-4' onClick={handleAddItem}>Add Item</button>
+                <div className='w-3/5 flex justify-between md:w-1/3 md:my-4 md:mx-96 my-8 mx-16'>
+                    <div className='flex flex-col items-start'>
+                        <h4 className='font-bold mb-2'>Subtotal:</h4>
+                        <h4 className='font-bold mb-2'>Discount:</h4>
+                        <h4 className='font-bold mb-2'>Tax:</h4>
+                        {/* <hr className='w-3/5 ml-48 md:ml-80'/> */}
+                        <h4 className='font-bold text-left'>Total:</h4>
+                    </div>
+                    <div className='flex flex-col items-end'>
+                        <h4 className='mb-2'>₦{subtotal}</h4>
+                        <h4 className='mb-2'>₦{discount !== null ? discount : 0}</h4>
+                        <h4 className='mb-2'>₦{tax !== null ? tax : 0}</h4>
+                        <h4>₦{total !== null ? total : 0}</h4>
+                    </div>
+                    </div>
             </div>
         </div>
-        <div className="w-1/4 fixed right-0 mr-16">
-            <button className='bg-darkGray p-4 text-white rounded-lg font-bold w-full' onClick={handleSubmit}>Review Invoice</button>
+        <div className="md:w-1/4 w-1/3 md:fixed md:right-0 mr-16 md:mt-0 mt-16">
+            <button className='bg-darkGray md:p-4 p-2 text-white rounded-lg font-bold w-full transition-all delay-150 ease-in-out' onClick={handleSubmit}>Review Invoice</button>
             <hr className='m-4 w-full -ml-0'/>
             <form>
                 <p>Tax rate(%):</p>
