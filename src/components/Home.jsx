@@ -133,7 +133,7 @@ const Home = () => {
 
 
   return (
-    <div className='md:flex md:flex-row md:m-16 m-4 w-9/10 md:justify-around md:items-start md:w-4/5 flex flex-col items-center'>
+    <div className='md:flex md:flex-row sm:m-16 m-4 w-full md:justify-around md:items-start md:w-4/5 flex flex-col items-center'>
         {showModal ? (
         <>
           <div
@@ -230,19 +230,19 @@ const Home = () => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-        <div className="bg-white rounded-xl md:w-3/4 w-3/4 p-4 md:-ml-80">
+        <div className="bg-red-400 rounded-xl sm:w-3/4 w-4/5 m-2 p-1 md:-ml-80">
             {/*Upper part of left hand side form*/}
            
             <div className='m-4'>
                 <h3>Current Date: <span className='ml-4'>{new Date().getDate()}/{new Date().getMonth() + 1}/{new Date().getFullYear()}</span></h3>
-                <div className='flex items-center justify-between w-64 mt-2'>
-                    <h3>Due Date: </h3>
-                    <input type='date' className='bg-ashy p-2 rounded-md' value={dueDate} onChange={handleDueDateChange} required></input>
+                <div className='flex items-center justify-between sm:w-64 mt-2'>
+                    <h3 className='w-1/2'>Due Date: </h3>
+                    <input type='date' className='bg-ashy md:p-2 p-1 rounded-md' value={dueDate} onChange={handleDueDateChange} required></input>
                 </div>
                 <hr className='md:mt-16 mt-4'/>
             </div>
             {/* Middle Side*/}
-            <div className='m-8 md:flex md:flex-row md:justify-between flex flex-col'>
+            <div className='sm:m-8 m-2 md:flex md:flex-row md:justify-between flex flex-col'>
                 {/* Bill Sender */}
                 <form className='flex flex-col md:w-2/5'>
                     <h2 className='font-bold mb-2'>Bill from:</h2>
@@ -299,9 +299,9 @@ const Home = () => {
             <div>
                 <hr className='mb-4 mt-16'/>
                 {/* Item heading */}
-                <div className='flex justify-between text-sm md:text-lg'>
-                    <h1 className='font-bold'>ITEM</h1>
-                    <div className='flex justify-between w-1/2'>
+                <div className='flex justify-between text-sm md:text-lg m-2'>
+                    <h1 className='font-bold w-1/3'>ITEM</h1>
+                    <div className='flex justify-between sm:w-1/2 w-3/4'>
                         <h1 className='font-bold'>QTY</h1>
                         <h1 className='font-bold'>PRICE(₦)</h1>
                         <h1 className='font-bold'>ACTION</h1>
@@ -314,24 +314,24 @@ const Home = () => {
                         <input
                             type="text"
                             placeholder='item name'
-                            className=' bg-ashy md:p-2 p-1 rounded-lg mb-2 md:w-80 w-32'
+                            className=' bg-ashy md:p-2 p-1 sm:rounded-lg rounded-sm mb-2 sm::w-80 w-20'
                             value={item.itemName}
                             onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                         />
                         <input
                             type="text"
                             placeholder='item description'
-                            className='bg-ashy md:p-2 p-1 rounded-lg mb-2 md:w-80 w-80'
+                            className='bg-ashy md:p-2 p-1 sm:mt-0 mt-4 sm:rounded-lg rounded-sm mb-2 sm:w-80 w-32'
                             value={item.itemDescription}
                             onChange={(e) => handleItemChange(index, 'itemDescription', e.target.value)}
                         />
                     </div>
-                    <div className='flex justify-between w-1/2 -mt-8 md:ml-0 -ml-32'>
+                    <div className='flex justify-between w-3/5 sm:-mt-8  -mt-10 sm:ml-0 -ml-16'>
                         {/* Quantity */}
                         <input
                             type="number"
                             placeholder='1'
-                            className='md:w-16 w-8 md:p-2 p-1 rounded-sm bg-ashy'
+                            className='sm:w-16 w-8 sm::p-2 p-1 rounded-sm bg-ashy'
                             value={item.quantity}
                             onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value))}
                         />
@@ -339,7 +339,7 @@ const Home = () => {
                         <input
                             type="number"
                             placeholder="1.00"
-                            className='md:w-32 w-24 md:p-2 p-1 rounded-sm bg-ashy'
+                            className='sm:w-32 w-16 md:p-2 p-1 rounded-sm bg-ashy'
                             value={item.price}
                             onChange={(e) => handleItemChange(index, 'price', parseFloat(e.target.value))}
                         />
@@ -353,7 +353,7 @@ const Home = () => {
             ))}
                 <hr className='mt-4'/>
                 <button className='rounded-lg bg-darkGray md:p-3 p-2 font-bold text-white mt-4' onClick={handleAddItem}>Add Item</button>
-                <div className='w-3/5 flex justify-between md:w-1/3 md:my-4 md:mx-96 my-8 mx-16'>
+                <div className='w-4/5 flex justify-between sm:w-1/3 sm:my-4 sm:mx-96 my-8 mx-4'>
                     <div className='flex flex-col items-start'>
                         <h4 className='font-bold mb-2'>Subtotal:</h4>
                         <h4 className='font-bold mb-2'>Discount:</h4>
@@ -367,10 +367,10 @@ const Home = () => {
                         <h4 className='mb-2'>₦{tax !== null ? tax : 0}</h4>
                         <h4>₦{total !== null ? total : 0}</h4>
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
-        <div className="md:w-1/4 w-1/3 md:fixed md:right-0 mr-16 md:mt-0 mt-16">
+        <div className="sm:w-1/4 w-4/5 sm:fixed sm:right-0 sm:mr-16 md:mt-0 mt-16">
             <button className='bg-darkGray md:p-4 p-2 text-white rounded-lg font-bold w-full transition-all delay-150 ease-in-out' onClick={handleSubmit}>Review Invoice</button>
             <hr className='m-4 w-full -ml-0'/>
             <form>
